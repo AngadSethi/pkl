@@ -117,7 +117,8 @@ tasks.test {
     excludeEngines("MacAarch64LanguageSnippetTestsEngine")
     excludeEngines("LinuxAmd64LanguageSnippetTestsEngine")
     excludeEngines("LinuxAarch64LanguageSnippetTestsEngine")
-    excludeEngines("AlpineLanguageSnippetTestsEngine")
+    excludeEngines("AlpineAmd64LanguageSnippetTestsEngine")
+    excludeEngines("AlpineAarch64LanguageSnippetTestsEngine")
     excludeEngines("WindowsLanguageSnippetTestsEngine")
   }
 }
@@ -166,7 +167,13 @@ val testLinuxExecutableAarch64 by
 val testAlpineExecutableAmd64 by
   tasks.registering(Test::class) {
     dependsOn(":pkl-cli:alpineExecutableAmd64")
-    configureExecutableTest("AlpineLanguageSnippetTestsEngine")
+    configureExecutableTest("AlpineAmd64LanguageSnippetTestsEngine")
+  }
+
+val testAlpineExecutableAarch64 by
+  tasks.registering(Test::class) {
+    dependsOn(":pkl-cli:alpineExecutableAarch64")
+    configureExecutableTest("AlpineAarch64LanguageSnippetTestsEngine")
   }
 
 val testWindowsExecutableAmd64 by
@@ -184,6 +191,8 @@ tasks.testNativeLinuxAarch64 { dependsOn(testLinuxExecutableAarch64) }
 tasks.testNativeLinuxAmd64 { dependsOn(testLinuxExecutableAmd64) }
 
 tasks.testNativeAlpineLinuxAmd64 { dependsOn(testAlpineExecutableAmd64) }
+
+tasks.testNativeAlpineLinuxAarch64 { dependsOn(testAlpineExecutableAarch64) }
 
 tasks.testNativeWindowsAmd64 { dependsOn(testWindowsExecutableAmd64) }
 

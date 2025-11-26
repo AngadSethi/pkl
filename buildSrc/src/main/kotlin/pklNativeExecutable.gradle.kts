@@ -34,6 +34,7 @@ val stagedMacAarch64Executable: Configuration by configurations.creating
 val stagedLinuxAmd64Executable: Configuration by configurations.creating
 val stagedLinuxAarch64Executable: Configuration by configurations.creating
 val stagedAlpineLinuxAmd64Executable: Configuration by configurations.creating
+val stagedAlpineLinuxAarch64Executable: Configuration by configurations.creating
 val stagedWindowsAmd64Executable: Configuration by configurations.creating
 
 val nativeImageClasspath by
@@ -64,6 +65,7 @@ dependencies {
   stagedLinuxAmd64Executable(executableFile("linux-amd64"))
   stagedLinuxAarch64Executable(executableFile("linux-aarch64"))
   stagedAlpineLinuxAmd64Executable(executableFile("alpine-linux-amd64"))
+  stagedAlpineLinuxAarch64Executable(executableFile("alpine-linux-aarch64"))
   stagedWindowsAmd64Executable(executableFile("windows-amd64.exe"))
 }
 
@@ -129,6 +131,18 @@ val alpineExecutableAmd64 by
     extraNativeImageArgs.addAll(listOf("--static", "--libc=musl"))
   }
 
+val alpineExecutableAarch64 by
+  tasks.registering(NativeImageBuild::class) {
+    imageName = executableSpec.name.map { "$it-alpine-linux-aarch64" }
+    mainClass = executableSpec.mainClass
+    aarch64()
+    setClasspath()
+    extraNativeImageArgs.addAll(listOf("--static", "--libc=musl"))
+    // Ensure compatibility for kernels with page size set to 4k, 16k and 64k
+    // (e.g. Raspberry Pi 5, Asahi Linux)
+    extraNativeImageArgs.add("-H:PageSize=65536")
+  }
+
 val windowsExecutableAmd64 by
   tasks.registering(NativeImageBuild::class) {
     imageName = executableSpec.name.map { "$it-windows-amd64" }
@@ -184,6 +198,8 @@ val assembleNativeLinuxAarch64 by tasks.existing { wraps(linuxExecutableAarch64)
 val assembleNativeLinuxAmd64 by tasks.existing { wraps(linuxExecutableAmd64) }
 
 val assembleNativeAlpineLinuxAmd64 by tasks.existing { wraps(alpineExecutableAmd64) }
+
+val assembleNativeAlpineLinuxAarch64 by tasks.existing { wraps(alpineExecutableAarch64) }
 
 val assembleNativeWindowsAmd64 by tasks.existing { wraps(windowsExecutableAmd64) }
 
@@ -276,6 +292,23 @@ publishing {
         }
       }
 
+      create<MavenPublication>("alpineLinuxExecutableAarch64") {
+        artifactId = "${executableSpec.publicationName.get()}-alpine-linux-aarch64"
+        artifact(stagedAlpineLinuxAarch64Executable.singleFile) {
+          classifier = null
+          extension = "bin"
+          builtBy(stagedAlpineLinuxAarch64Executable)
+        }
+        pom {
+          name = "${executableSpec.publicationName.get()}-alpine-linux-aarch64"
+          url = executableSpec.website
+          description =
+            executableSpec.documentationName.map { name ->
+              "Native $name executable for linux/aarch64 and statically linked to musl."
+            }
+        }
+      }
+
       create<MavenPublication>("windowsExecutableAmd64") {
         artifactId = "${executableSpec.publicationName.get()}-windows-amd64"
         artifact(stagedWindowsAmd64Executable.singleFile) {
@@ -303,6 +336,7 @@ signing {
     sign(publishing.publications["macExecutableAarch64"])
     sign(publishing.publications["macExecutableAmd64"])
     sign(publishing.publications["alpineLinuxExecutableAmd64"])
+    sign(publishing.publications["alpineLinuxExecutableAarch64"])
     sign(publishing.publications["windowsExecutableAmd64"])
   }
 }

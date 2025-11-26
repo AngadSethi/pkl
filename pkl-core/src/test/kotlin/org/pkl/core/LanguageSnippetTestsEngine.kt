@@ -333,8 +333,13 @@ class LinuxAarch64LanguageSnippetTestsEngine : AbstractNativeLanguageSnippetTest
   override val testClass: KClass<*> = LinuxLanguageSnippetTests::class
 }
 
-class AlpineLanguageSnippetTestsEngine : AbstractNativeLanguageSnippetTestsEngine() {
+class AlpineAmd64LanguageSnippetTestsEngine : AbstractNativeLanguageSnippetTestsEngine() {
   override val pklExecutablePath: Path = Executables.pkl.alpineAmd64
+  override val testClass: KClass<*> = AlpineLanguageSnippetTests::class
+}
+
+class AlpineAarch64LanguageSnippetTestsEngine : AbstractNativeLanguageSnippetTestsEngine() {
+  override val pklExecutablePath: Path = Executables.pkl.alpineAarch64
   override val testClass: KClass<*> = AlpineLanguageSnippetTests::class
 }
 

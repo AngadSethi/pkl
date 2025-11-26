@@ -61,12 +61,14 @@ local buildNativeJobs: Mapping<String, BuildNativeJob> = new {
           }
         }
       }
-      ["\(_project)-alpine-linux-amd64-\(_dist)"] {
-        arch = "amd64"
-        os = "linux"
-        musl = true
-        isRelease = _dist == "release"
-        project = _project
+      for (_arch in List("amd64", "aarch64")) {
+        ["\(_project)-alpine-linux-\(_arch)-\(_dist)"] {
+          arch = _arch
+          os = "linux"
+          musl = true
+          isRelease = _dist == "release"
+          project = _project
+        }
       }
       ["\(_project)-windows-amd64-\(_dist)"] {
         arch = "amd64"
