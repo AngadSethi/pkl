@@ -461,7 +461,7 @@ jobs:
         fi
 
         # install musl
-        if [[ ! -f ~/staticdeps/bin/x86_64-linux-musl-gcc ]]; then
+        if [[ ! -f ~/staticdeps/bin/aarch64-linux-musl-gcc ]]; then
           # Download musl tarball and signature
           curl -Lf "https://musl.libc.org/releases/musl-${MUSL_VERSION}.tar.gz" -o /tmp/musl.tar.gz
           curl -Lf "https://musl.libc.org/releases/musl-${MUSL_VERSION}.tar.gz.asc" -o /tmp/musl.tar.gz.asc
@@ -491,10 +491,11 @@ jobs:
           rm -rf "/tmp/dep_musl-${MUSL_VERSION}"
 
           # native-image expects to find an executable at this path.
-          ln -s ~/staticdeps/bin/musl-gcc ~/staticdeps/bin/x86_64-linux-musl-gcc
+          ln -s ~/staticdeps/bin/musl-gcc ~/staticdeps/bin/aarch64-linux-musl-gcc
         fi
 
         echo "${HOME}/staticdeps/bin" >> "$GITHUB_PATH"
+
     - name: gradle buildNative
       shell: bash
       run: ./gradlew --info --stacktrace -DpklMultiJdkTesting=true -Dpkl.musl=true pkl-cli:buildNative
@@ -845,7 +846,7 @@ jobs:
         fi
 
         # install musl
-        if [[ ! -f ~/staticdeps/bin/x86_64-linux-musl-gcc ]]; then
+        if [[ ! -f ~/staticdeps/bin/aarch64-linux-musl-gcc ]]; then
           # Download musl tarball and signature
           curl -Lf "https://musl.libc.org/releases/musl-${MUSL_VERSION}.tar.gz" -o /tmp/musl.tar.gz
           curl -Lf "https://musl.libc.org/releases/musl-${MUSL_VERSION}.tar.gz.asc" -o /tmp/musl.tar.gz.asc
@@ -875,10 +876,11 @@ jobs:
           rm -rf "/tmp/dep_musl-${MUSL_VERSION}"
 
           # native-image expects to find an executable at this path.
-          ln -s ~/staticdeps/bin/musl-gcc ~/staticdeps/bin/x86_64-linux-musl-gcc
+          ln -s ~/staticdeps/bin/musl-gcc ~/staticdeps/bin/aarch64-linux-musl-gcc
         fi
 
         echo "${HOME}/staticdeps/bin" >> "$GITHUB_PATH"
+
     - name: gradle buildNative
       shell: bash
       run: ./gradlew --info --stacktrace -DpklMultiJdkTesting=true -Dpkl.musl=true pkl-doc:buildNative
