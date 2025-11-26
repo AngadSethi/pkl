@@ -20,10 +20,16 @@ extraGradleArgs {
 }
 
 steps {
-  when (musl) {
+  when (musl && arch == "amd64") {
     new {
       name = "Install musl and zlib"
       run = read("../scripts/install_musl.sh").text
+    }
+  }
+  when (musl && arch == "aarch64") {
+    new {
+      name = "Install musl and zlib"
+      run = read("../scripts/install_musl_aarch64.sh").text
     }
   }
   new {
